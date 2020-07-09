@@ -93,15 +93,21 @@ class NLClassifier : public core::BaseTaskApi<std::vector<core::Category>,
   std::vector<core::Category> Classify(const std::string& text);
 
  protected:
+  static constexpr int kOutputTensorIndex = 0;
+  static constexpr int kOutputTensorLabelFileIndex = 0;
+
+  absl::Status Initialize(const NLClassifierOptions& options);
   const NLClassifierOptions& GetOptions() const;
-  void SetOptions(const NLClassifierOptions& options);
-  void SetLabelsVector(std::unique_ptr<std::vector<std::string>> labels_vector);
+  absl::Status TrySetLabelFromMetadata(const TensorMetadata* metadata);
   absl::Status Preprocess(const std::vector<TfLiteTensor*>& input_tensors,
                           const std::string& input) override;
 
   StatusOr<std::vector<core::Category>> Postprocess(
       const std::vector<const TfLiteTensor*>& output_tensors,
       const std::string& input) override;
+
+  std::vector<core::Category> BuildResults(const TfLiteTensor* score,
+                                           const TfLiteTensor* label);
 
   // Gets the tensor from a vector of tensors by checking tensor name first and
   // tensor index second, return nullptr if no tensor is found.
@@ -110,7 +116,7 @@ class NLClassifier : public core::BaseTaskApi<std::vector<core::Category>,
       const std::vector<TensorType*>& tensors,
       const flatbuffers::Vector<flatbuffers::Offset<TensorMetadata>>*
           metadata_array,
-      const std::string& name, int index)  {
+      const std::string& name, int index) {
     if (metadata_array != nullptr && metadata_array->size() == tensors.size()) {
       for (int i = 0; i < metadata_array->size(); i++) {
         if (strcmp(name.data(), metadata_array->Get(i)->name()->c_str()) == 0) {
@@ -126,10 +132,6 @@ class NLClassifier : public core::BaseTaskApi<std::vector<core::Category>,
     }
     return index >= 0 && index < tensors.size() ? tensors[index] : nullptr;
   }
-
-  // Set options and validate model with options.
-  static absl::Status CheckStatusAndSetOptions(
-      const NLClassifierOptions& options, NLClassifier* nl_classifier);
 
  private:
   NLClassifierOptions options_;

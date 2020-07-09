@@ -23,3 +23,22 @@ cc_library(
         "@com_google_absl//absl/status",
     ],
 )
+
+cc_library(
+    name = "bert_nl_classifier",
+    srcs = [
+        "bert_nl_classifier.cc",
+    ],
+    hdrs = [
+        "bert_nl_classifier.h",
+    ],
+    deps = [
+        ":nl_classifier",
+        "//tensorflow_lite_support/cc/task/core:task_api_factory",
+        "//tensorflow_lite_support/cc/task/core:task_utils",
+        "//tensorflow_lite_support/cc/text/tokenizers:tokenizer",
+        "//tensorflow_lite_support/cc/text/tokenizers:tokenizer_utils",
+        "//tensorflow_lite_support/cc/utils:common_utils",
+        "@com_google_absl//absl/strings:str_format",
+    ],
+)

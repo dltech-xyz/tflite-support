@@ -36,6 +36,22 @@ struct Category {
   friend bool operator!=(const Category& lhs, const Category& rhs) {
     return !(lhs == rhs);
   }
+
+  friend bool operator>(const Category& lhs, const Category& rhs) {
+    return lhs.score > rhs.score;
+  }
+
+  friend bool operator>=(const Category& lhs, const Category& rhs) {
+    return lhs.score > rhs.score;
+  }
+
+  friend bool operator<(const Category& lhs, const Category& rhs) {
+    return lhs.score < rhs.score;
+  }
+
+  friend bool operator<=(const Category& lhs, const Category& rhs) {
+    return lhs.score <= rhs.score;
+  }
 };
 
 }  // namespace core
