@@ -28,7 +28,13 @@ namespace tflite {
 namespace support {
 namespace utils {
 
+const char kIllegalArgumentException[] = "java/lang/IllegalArgumentException";
 const char kIllegalStateException[] = "java/lang/IllegalStateException";
+const char kNullPointerException[] = "java/lang/NullPointerException";
+const char kIndexOutOfBoundsException[] = "java/lang/IndexOutOfBoundsException";
+const char kUnsupportedOperationException[] =
+    "java/lang/UnsupportedOperationException";
+const char kAssertionError[] = "java/lang/AssertionError";
 
 // Check if t is nullptr, throw IllegalStateException if it is.
 // Used to verify different types of jobjects are correctly created from jni.
@@ -67,6 +73,9 @@ std::vector<std::string> StringListToVector(JNIEnv* env, jobject list_object);
 
 // Gets a mapped file buffer from a java object representing a file.
 absl::string_view GetMappedFileBuffer(JNIEnv* env, const jobject& file_buffer);
+
+void ThrowException(JNIEnv* env, const char* clazz, const char* fmt, ...);
+
 }  // namespace utils
 }  // namespace support
 }  // namespace tflite
